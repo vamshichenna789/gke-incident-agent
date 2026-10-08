@@ -15,32 +15,25 @@ spec:
     spec:
       serviceAccountName: incident-agent
       automountServiceAccountToken: true
-
-      # Dedicated node pool created with cloud-platform scope because
-      # the original node pool had restrictive immutable OAuth scopes.
-      nodeSelector:
-        cloud.google.com/gke-nodepool: ai-agent-pool
-
+      # Optional: pin the agent to a dedicated node pool.
+      # nodeSelector:
+      #   cloud.google.com/gke-nodepool: <AGENT_NODEPOOL>
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-
       containers:
         - name: agent
-          image: us-central1-docker.pkg.dev/burner-chekrish1-6840/ai-agent/incident-agent:v13
+          image: <ARTIFACT_REGISTRY_IMAGE>
           imagePullPolicy: IfNotPresent
-
           envFrom:
             - configMapRef:
                 name: incident-agent-config
-
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             capabilities:
               drop:
                 - ALL
-
           resources:
             requests:
               cpu: "250m"

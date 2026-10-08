@@ -11,6 +11,7 @@ rules:
       - endpoints
       - events
       - namespaces
+      - serviceaccounts
     verbs: ["get", "list"]
 
   - apiGroups: ["apps"]

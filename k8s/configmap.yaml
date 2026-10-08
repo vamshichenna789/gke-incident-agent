@@ -4,11 +4,21 @@ metadata:
   name: incident-agent-config
   namespace: ai-agent
 data:
-  GOOGLE_CLOUD_PROJECT: "burner-chekrish1-6840"
-  GOOGLE_CLOUD_LOCATION: "us-central1"
-  GKE_CLUSTER_LOCATION: "us-central1-a"
-  GKE_CLUSTER_NAME: "ai"
-  TARGET_NAMESPACE: "cymbal-bank"
+  # Replace all angle-bracket placeholders with values for your environment.
+  GOOGLE_CLOUD_PROJECT: "<GCP_PROJECT_ID>"
+  GOOGLE_CLOUD_LOCATION: "<VERTEX_AI_REGION>"
+  GKE_CLUSTER_LOCATION: "<GKE_CLUSTER_LOCATION>"
+  GKE_CLUSTER_NAME: "<GKE_CLUSTER_NAME>"
+  TARGET_NAMESPACE: "<TARGET_NAMESPACE>"
   GKE_MCP_URL: "https://container.googleapis.com/mcp"
   GOOGLE_GENAI_USE_VERTEXAI: "TRUE"
   GEMINI_MODEL: "gemini-2.5-flash"
+  GITHUB_OWNER: "<GITHUB_OWNER>"
+  GITHUB_REPOSITORY: "<GITHUB_REPOSITORY>"
+  GITHUB_TOKEN_SECRET: "<GITHUB_TOKEN_SECRET_NAME>"
+  GITHUB_BASE_BRANCH: "main"
+  # Example deterministic remediation mapping. Change these values for your GitOps repository.
+  GITHUB_REMEDIATION_WORKLOAD: "<REMEDIATION_WORKLOAD>"
+  GITHUB_REMEDIATION_FILE: "<REMEDIATION_FILE_PATH>"
+  GITHUB_REMEDIATION_ANCHOR_KEY: "<REMEDIATION_ANCHOR_KEY>"
+  GITHUB_REMEDIATION_INSERT_LINE: "<REMEDIATION_INSERT_LINE>"

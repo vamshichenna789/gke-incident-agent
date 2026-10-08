@@ -8,9 +8,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY app.py github_client.py github_remediation.py ./
 
-# Non-root runtime
 RUN useradd --create-home --uid 10001 appuser
 USER 10001
 

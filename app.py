@@ -13,6 +13,7 @@ import json
 import re
 import uuid
 from github_client import GitHubClient
+from github_remediation import create_remediation_pr
 
 from google.adk.agents import Agent
 from google.adk.runners import InMemoryRunner
@@ -23,10 +24,10 @@ from google.adk.tools.mcp_tool.mcp_session_manager import (
 
 
 PROJECT_ID = os.environ["GOOGLE_CLOUD_PROJECT"]
-VERTEX_LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
-GKE_LOCATION = os.environ.get("GKE_CLUSTER_LOCATION", "us-central1-a")
+VERTEX_LOCATION = os.environ["GOOGLE_CLOUD_LOCATION"]
+GKE_LOCATION = os.environ["GKE_CLUSTER_LOCATION"]
 CLUSTER_NAME = os.environ["GKE_CLUSTER_NAME"]
-NAMESPACE = os.environ.get("TARGET_NAMESPACE", "cymbal-bank")
+NAMESPACE = os.environ["TARGET_NAMESPACE"]
 MCP_URL = os.environ.get(
     "GKE_MCP_URL",
     "https://container.googleapis.com/mcp",
@@ -1296,13 +1297,12 @@ async def investigate() -> None:
         elif validate_remediation_plan(
             remediation_plan
         ):
-
-            remediation_plan[
-                "incident_id"
-            ] = incident_report.get(
+            incident_id = incident_report.get(
                 "incident_id",
-                "UNKNOWN"
+                f"INC-{uuid.uuid4().hex[:8].upper()}",
             )
+
+            remediation_plan["incident_id"] = incident_id
 
             print(
                 json.dumps(
@@ -1310,6 +1310,77 @@ async def investigate() -> None:
                     indent=2
                 )
             )
+
+            # ==========================================================
+            # GITHUB GITOPS REMEDIATION
+            # ==========================================================
+
+            print("\n" + "=" * 42)
+            print("GITHUB GITOPS REMEDIATION")
+            print("=" * 42)
+
+            print(
+                "Creating Pull Requests for eligible "
+                "GitOps remediation actions..."
+            )
+
+            try:
+                pr_results = await create_remediation_pr(
+                    incident_id=incident_id,
+                    remediation_plan=remediation_plan,
+                )
+
+                if not pr_results:
+                    print(
+                        "\nNo automated GitOps remediation "
+                        "was eligible."
+                    )
+
+                for result in pr_results:
+                    print(
+                        "\n" + "=" * 42
+                    )
+                    print(
+                        "REMEDIATION PR CREATED"
+                    )
+                    print(
+                        "=" * 42
+                    )
+
+                    print(
+                        f"Incident       : "
+                        f"{result['incident_id']}"
+                    )
+
+                    print(
+                        f"Branch         : "
+                        f"{result['branch']}"
+                    )
+
+                    print(
+                        f"PR Number      : "
+                        f"{result['pull_request_number']}"
+                    )
+
+                    print(
+                        f"Pull Request   : "
+                        f"{result['pull_request_url']}"
+                    )
+
+                    print(
+                        "\nACTION REQUIRED:"
+                    )
+
+                    print(
+                        "Review and approve the PR "
+                        "before merging."
+                    )
+
+            except Exception as exc:
+                print(
+                    "\nGitHub remediation failed:"
+                )
+                print(exc)
 
         else:
 
