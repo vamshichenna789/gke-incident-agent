@@ -12,6 +12,7 @@ from google.genai import types
 import json
 import re
 import uuid
+from github_client import GitHubClient
 
 from google.adk.agents import Agent
 from google.adk.runners import InMemoryRunner
@@ -506,7 +507,20 @@ def get_google_access_token() -> str:
     )
     credentials.refresh(Request())
     return credentials.token
+async def verify_github_access() -> None:
+    """Verify GitHub authentication and repository access."""
 
+    github = GitHubClient()
+
+    repository = await github.get_repository()
+
+    print("\n" + "=" * 42)
+    print("GITHUB ACCESS")
+    print("=" * 42)
+
+    print(f"Repository : {repository['full_name']}")
+    print(f"Private    : {repository['private']}")
+    print(f"Default    : {repository['default_branch']}")
 
 def query_gke_logs(
     minutes: int = 30,
@@ -1097,6 +1111,7 @@ async def investigate() -> None:
     )
 
     print("GKE MCP connection configured.")
+    await verify_github_access()
     APP_NAME = "incident_triage"
     USER_ID = "incident-engineer"
 

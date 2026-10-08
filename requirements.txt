@@ -5,3 +5,4 @@ google-auth
 aiohttp
 google-cloud-logging
 google-cloud-monitoring
+google-cloud-secret-manager
