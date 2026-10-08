@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: incident-agent-config
+  namespace: ai-agent
+data:
+  GOOGLE_CLOUD_PROJECT: "burner-chekrish1-6840"
+  GOOGLE_CLOUD_LOCATION: "us-central1"
+  GKE_CLUSTER_LOCATION: "us-central1-a"
+  GKE_CLUSTER_NAME: "ai"
+  TARGET_NAMESPACE: "cymbal-bank"
+  GKE_MCP_URL: "https://container.googleapis.com/mcp"
+  GOOGLE_GENAI_USE_VERTEXAI: "TRUE"
+  GEMINI_MODEL: "gemini-2.5-flash"
